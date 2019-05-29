@@ -7,10 +7,12 @@ const getCookie = (cookieName) => {
   return decodeURIComponent(!!cookieString ? cookieString.toString().replace(/^[^=]+./,'') : '');
 }
 
+
 class App extends Component {
   state = {
     clickCount: getCookie('count') || 0,
     usernameIsEditable: false,
+    username: getCookie('username') || '',
   }
 
   handleClick = () => {
@@ -21,26 +23,34 @@ class App extends Component {
     });
   }
 
-  editUsername = () => {
+  editusername = () => {
     this.setState({
       usernameIsEditable: true,
     });
   }
 
-  saveUsername = () => {
+  saveusername = () => {
+    const newCount = String(this.state.username);
+    document.cookie = `username=${newCount}`;
     this.setState({
       usernameIsEditable: false,
     });
   }
 
+  handleNameChange = (event) => {
+    this.setState({
+      username: [event.target.value],
+    });
+    console.log(this.state.username);
+}
+
   render() {
+  
     return (
       <div>
         <center>
           <h1>Click the Cookie!!</h1>
-          <p>
-            Username:
-            {/* Username should go here */}
+            {this.state.username}
             {/* The next block of code is conditional rendering.
             Look at the documentation https://reactjs.org/docs/conditional-rendering.html
             if this is new to you. */}
@@ -49,23 +59,24 @@ class App extends Component {
               The part at the front is being evaluated. The `?` starts the conditions. 
               The first condition is what will be done if true.
               The `:` breaks into the else block.
-              
               Rewritten as if/else:
               ```
               let buttonToShow;
               if(this.state.usernameIsEditable) {
-                buttonToShow = <button onClick={this.saveUsername}>Save Username</button>
+                buttonToShow = <button onClick={this.saveusername}>Save username</button>
               } else {
-                buttonToShow = <button onClick={this.editUsername}>Edit Username</button>
+                buttonToShow = <button onClick={this.editusername}>Edit username</button>
               }
               ```
 
             */}
             {this.state.usernameIsEditable ?
-              <button onClick={this.saveUsername}>Save Username</button> :
-              <button onClick={this.editUsername}>Edit Username</button>
+              <div>
+              <input placeholder="name" onChange={this.handleNameChange} />
+              <button onClick={this.saveusername} value={this.state.username} data-name="username">Save username</button> 
+              </div>:
+              <button onClick={this.editusername}>Edit username</button>
             }
-          </p>
           <p>{this.state.clickCount}</p>
           <span
             role="img"
